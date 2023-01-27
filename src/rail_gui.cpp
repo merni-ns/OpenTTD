@@ -40,6 +40,7 @@
 #include "tunnelbridge_cmd.h"
 #include "waypoint_cmd.h"
 #include "rail_cmd.h"
+#include "gfx_func.h"
 
 #include "station_map.h"
 #include "tunnelbridge_map.h"
@@ -1316,6 +1317,12 @@ public:
 					_cur_dpi = old_dpi;
 				}
 				break;
+			case WID_BRAS_SHOW_NEWST_TYPE: {
+				DrawMultilineText(r.left, r.right, r.top, r.bottom, GetDParam(0), TC_WHITE, SA_LEFT, 0, FS_NORMAL);
+				}
+				break;
+				
+				
 			}
 		}
 	}
@@ -1578,7 +1585,7 @@ static const NWidgetPart _nested_station_builder_widgets[] = {
 					NWidget(WWT_PANEL, COLOUR_GREY, WID_BRAS_PLATFORM_DIR_Y), SetMinimalSize(66, 60), SetFill(0, 0), SetDataTip(0x0, STR_STATION_BUILD_RAILROAD_ORIENTATION_TOOLTIP), EndContainer(),
 					NWidget(NWID_SPACER), SetMinimalSize(7, 0), SetFill(1, 0),
 				EndContainer(),
-				NWidget(WWT_LABEL, COLOUR_DARK_GREEN, WID_BRAS_SHOW_NEWST_TYPE), SetMinimalSize(144, 11), SetDataTip(STR_ORANGE_STRING, STR_NULL), SetPadding(1, 2, 4, 2),
+				NWidget(WWT_EMPTY, COLOUR_DARK_GREEN, WID_BRAS_SHOW_NEWST_TYPE), SetMinimalSize(144, 11), SetDataTip(STR_ORANGE_STRING, STR_NULL), SetPadding(1, 2, 4, 2),
 				NWidget(WWT_LABEL, COLOUR_DARK_GREEN), SetMinimalSize(144, 11), SetDataTip(STR_STATION_BUILD_NUMBER_OF_TRACKS, STR_NULL), SetPadding(0, 2, 0, 2),
 				NWidget(NWID_HORIZONTAL),
 					NWidget(NWID_SPACER), SetFill(1, 0),
