@@ -2422,7 +2422,7 @@ static bool StationJoinerNeeded(TileArea ta, const StationPickerCmdProc &proc)
 	if (!_ctrl_pressed) return false;
 
 	/* Now check if we could build there */
-	if (!proc(true, INVALID_STATION)) return false;
+	// if (!proc(true, INVALID_STATION)) return false;
 
 	/* Test for adjacent station or station below selection.
 	 * If adjacent-stations is disabled and we are building next to a station, do not show the selection window.
