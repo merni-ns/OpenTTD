@@ -16,7 +16,7 @@ concurrency:
 jobs:
   analyze:
     name: Analyze
-    runs-on: ubuntu-latest
+    runs-on: macos-14
     permissions:
       actions: read
       contents: read
@@ -39,46 +39,16 @@ jobs:
         git clone https://github.com/microsoft/vcpkg ${{ runner.temp }}/vcpkg
         ${{ runner.temp }}/vcpkg/bootstrap-vcpkg.sh -disableMetrics
 
-    - name: Install dependencies
-      run: |
-        echo "::group::Update apt"
-        sudo apt-get update
-        echo "::endgroup::"
-
-        echo "::group::Install dependencies"
-        sudo apt-get install -y --no-install-recommends \
-          liballegro4-dev \
-          libcurl4-openssl-dev \
-          libfontconfig-dev \
-          libharfbuzz-dev \
-          libicu-dev \
-          liblzma-dev \
-          liblzo2-dev \
-          libsdl2-dev \
-          zlib1g-dev \
-          # EOF
-
-        echo "::group::Install vcpkg dependencies"
-
-        # Disable vcpkg integration, as we mostly use system libraries.
-        mv vcpkg.json vcpkg-disabled.json
-
-        # We only use breakpad from vcpkg, as its CMake files
-        # are a bit special. So the Ubuntu's variant doesn't work.
-        ${{ runner.temp }}/vcpkg/vcpkg install breakpad
-
-        echo "::endgroup::"
-      env:
-        DEBIAN_FRONTEND: noninteractive
-
     - name: Prepare build
       run: |
         mkdir build
         cd build
 
-        echo "::group::CMake"
-        cmake .. -DCMAKE_TOOLCHAIN_FILE=${{ runner.temp }}/vcpkg/scripts/buildsystems/vcpkg.cmake
-        echo "::endgroup::"
+        cmake .. \
+          -DCMAKE_OSX_ARCHITECTURES=arm64 \
+          -DVCPKG_TARGET_TRIPLET=arm64-osx \
+          -DCMAKE_TOOLCHAIN_FILE=${{ runner.temp }}/vcpkg/scripts/buildsystems/vcpkg.cmake \
+          # EOF
 
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v3
@@ -91,8 +61,8 @@ jobs:
         cd build
 
         echo "::group::Build"
-        echo "Running on $(nproc) cores"
-        cmake --build . -j $(nproc)
+        echo "Running on $(sysctl -n hw.logicalcpu) cores"
+        cmake --build . -j $(sysctl -n hw.logicalcpu)
         echo "::endgroup::"
 
     - name: Perform CodeQL Analysis
